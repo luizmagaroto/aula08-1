@@ -15,10 +15,36 @@ export default function Home() {
       }
     }
     buscarUsuario();
-  }, [])
+  }, [usuarios])
+
+  const removerPessoa = async(id) => {
+try{
+   await fetch('http://localhost:3000/usuarios/'+id, {
+method: 'DELETE',
+   })
+}catch{
+  alert("erro!")
+}
+  }
+const exportandopdf = () => {
+  const doc = new jsPDF();
+  const tabela = usuarios.map(usuario=> {
+    usuario.nome,
+    usuario.email
+  });
+  doc.text("Lista de Usuário", 10, 10);
+  doc.autoTable({
+    head: [["Nome", "Email"]],
+    body: tabela
+  });
+
+  doc.save("alunos.pdf");
+}
 
   return (
-    <table>
+    <div>
+      <button onClick={()=>exportandopdf()}></button>
+      <table>
       <tr>
         <td>Nome</td>
         <td>E-mail</td>
@@ -27,8 +53,10 @@ export default function Home() {
         <tr key={usuario.id}>
           <td>{usuario.nome}</td>
           <td>{usuario.email}</td>
+          <td><button onClick={()=> removerPessoa(usuario.id)}>X</button></td>
         </tr>
       )}
     </table>
+    </div>
   );
-}
+      }
